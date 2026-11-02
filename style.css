@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #020617; /* Tailwind slate-950 */
+    color: #f8fafc; /* Tailwind slate-50 */
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #020617;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    display: flex;
+    width: 200%;
+    animation: marquee 28s linear infinite;
+}
+
+input:focus {
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+}
+
+.badge-transition {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

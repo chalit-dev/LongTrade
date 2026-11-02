@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LONG TRADE - ค้นหาหุ้น กราฟราคาจริง & สรุปข่าวสารเจาะลึกในหน้าเดียว</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen flex flex-col">
+
+    <header class="w-full z-40 bg-slate-950">
+        
+        <div class="bg-amber-400 text-slate-950 px-4 py-1.5 text-xs font-semibold text-center flex items-center justify-center gap-2 border-b border-amber-500">
+            <span>⚠️</span>
+            <span><strong>คำเตือน:</strong> ข้อมูลและสรุปข่าวสารทั้งหมดจัดทำขึ้นเพื่อ <strong>การศึกษาและวิเคราะห์เชิงกรณีศึกษาเท่านั้น</strong> มิใช่คำแนะนำการซื้อขายหลักทรัพย์ การลงทุนมีความเสี่ยงสูง ผู้ลงทุนควรศึกษาข้อมูลก่อนตัดสินใจ</span>
+        </div>
+
+        <div class="bg-slate-900 border-b border-slate-800 py-1.5 overflow-hidden text-xs text-slate-300">
+            <div class="animate-marquee whitespace-nowrap gap-8 flex font-mono">
+                <span class="flex items-center gap-1.5"><strong class="text-white">SET:</strong> 1,462.15 <span class="text-emerald-400">+8.40 (+0.58%)</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">S&P 500:</strong> 5,864.67 <span class="text-emerald-400">+23.10 (+0.40%)</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">ASML:</strong> $892.40 <span class="text-emerald-400">+2.15%</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">NVDA:</strong> $141.54 <span class="text-emerald-400">+3.24%</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">CPALL:</strong> 66.50 <span class="text-emerald-400">+1.53%</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">GULF:</strong> 65.50 <span class="text-rose-400">-0.76%</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">SET:</strong> 1,462.15 <span class="text-emerald-400">+8.40 (+0.58%)</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">S&P 500:</strong> 5,864.67 <span class="text-emerald-400">+23.10 (+0.40%)</span></span>
+                <span class="flex items-center gap-1.5"><strong class="text-white">ASML:</strong> $892.40 <span class="text-emerald-400">+2.15%</span></span>
+            </div>
+        </div>
+
+        <nav class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchPage('search')">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <svg class="w-6 h-6 text-slate-950" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                            <polyline points="16 7 22 7 22 13"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold tracking-wider bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">LONG TRADE</span>
+                        <span class="block text-[10px] text-slate-400 tracking-tight">GLOBAL STOCK INTELLIGENCE & FACTUAL NEWS</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                    <button id="nav-btn-search" onclick="switchPage('search')" class="px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition bg-cyan-500 text-slate-950 flex items-center gap-1.5 shadow-sm">
+                        <span>🔍</span> ค้นหาหุ้น & สรุปข่าวสารจริง
+                    </button>
+                    <button id="nav-btn-assessment" onclick="switchPage('assessment')" class="px-4 py-2 rounded-lg text-xs md:text-sm font-bold transition text-slate-400 hover:text-white flex items-center gap-1.5">
+                        <span>🎯</span> แบบประเมินจัดพอร์ต 7 มิติ
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="page-search" class="flex-grow">
+
+        <section class="py-10 px-4 bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800">
+            <div class="max-w-4xl mx-auto text-center">
+                <span class="text-xs font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950 border border-cyan-800 px-3.5 py-1 rounded-full">
+                    LIVE CHART & COMPREHENSIVE IN-PAGE NEWS SUMMARY
+                </span>
+                <h1 class="text-2xl md:text-4xl font-black text-white mt-3 mb-2">
+                    ค้นหาหุ้นใดก็ได้ สรุปข่าวสารจริงให้อ่านทันทีในหน้านี้
+                </h1>
+                <p class="text-slate-400 text-xs md:text-sm max-w-xl mx-auto mb-6">
+                    พิมพ์ชื่อย่อหุ้นไทยหรือหุ้นต่างประเทศ ระบบจะดึงกราฟสดและ **สรุปข่าวสารจริงตามข้อเท็จจริงพร้อมบทวิเคราะห์** แสดงผลบนหน้านี้ให้อ่านทันที ไม่ต้องกดลิงก์ออกไปข้างนอก
+                </p>
+
+                <form onsubmit="handleGlobalSearch(event)" class="relative max-w-2xl mx-auto flex gap-2">
+                    <div class="relative flex-grow">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 text-lg">
+                            🔍
+                        </div>
+                        <input 
+                            type="text" 
+                            id="global-search-input" 
+                            placeholder="พิมพ์ชื่อหุ้น เช่น NVDA, CPALL, ASML, GULF, TSM, COST, AAPL, DELTA..." 
+                            class="w-full pl-12 pr-4 py-3.5 bg-slate-950 border-2 border-slate-700 hover:border-cyan-500 focus:border-cyan-400 text-white placeholder-slate-500 rounded-2xl text-sm focus:outline-none transition shadow-2xl uppercase font-mono"
+                        >
+                    </div>
+                    <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-3.5 rounded-2xl text-xs md:text-sm transition shadow-lg shadow-cyan-500/20 whitespace-nowrap">
+                        ดึงกราฟและสรุปข่าว
+                    </button>
+                </form>
+
+                <div class="flex flex-wrap justify-center items-center gap-2 mt-4 text-xs">
+                    <span class="text-slate-500">คลิกค้นหาด่วน:</span>
+                    <button onclick="executeStockSearch('NVDA')" class="bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-700 px-3 py-1 rounded-lg transition font-mono">NVDA</button>
+                    <button onclick="executeStockSearch('CPALL')" class="bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-700 px-3 py-1 rounded-lg transition font-mono">CPALL</button>
+                    <button onclick="executeStockSearch('ASML')" class="bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-700 px-3 py-1 rounded-lg transition font-mono">ASML</button>
+                    <button onclick="executeStockSearch('GULF')" class="bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-700 px-3 py-1 rounded-lg transition font-mono">GULF</button>
+                    <button onclick="executeStockSearch('COST')" class="bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-700 px-3 py-1 rounded-lg transition font-mono">COST</button>
+                    <button onclick="executeStockSearch('TSM')" class="bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-700 px-3 py-1 rounded-lg transition font-mono">TSM</button>
+                </div>
+            </div>
+        </section>
+
+        <main class="max-w-6xl mx-auto px-4 py-8">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-5 md:p-8 shadow-2xl">
+                <div class="border-b border-slate-800 pb-5 mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span id="active-symbol-badge" class="font-mono text-xs font-bold text-cyan-400 bg-cyan-950 border border-cyan-800 px-3 py-0.5 rounded-full">
+                                NASDAQ:NVDA
+                            </span>
+                            <span class="text-xs text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-2.5 py-0.5 rounded-full flex items-center gap-1 font-mono">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> LIVE SYNC
+                            </span>
+                        </div>
+                        <h2 id="active-stock-name" class="text-2xl md:text-3xl font-black text-white">NVIDIA Corporation</h2>
+                        <p id="active-stock-desc" class="text-slate-400 text-xs md:text-sm mt-1">ผู้นำด้านฮาร์ดแวร์ GPU และโครงสร้างพื้นฐาน AI ของโลก</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs text-slate-400 block">เทคโนโลยีการดึงข้อมูลสด</span>
+                        <span class="text-xs font-bold text-slate-300 font-mono">TradingView Real-Time Engine</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden p-2 mb-8">
+                    <div id="tradingview_chart_container" class="w-full h-[460px]"></div>
+                </div>
+
+                <div class="border-t border-slate-800 pt-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg">📰</span>
+                                <h3 class="text-lg md:text-xl font-bold text-white">
+                                    สรุปข่าวสารและข้อเท็จจริงสำคัญของ <span id="news-stock-title" class="text-cyan-400 font-mono">NVDA</span>
+                                </h3>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-0.5">รวบรวมและสรุปประเด็นสำคัญจากสำนักข่าวการเงินชั้นนำและรายงานทางการ อ่านครบในหน้านี้</p>
+                        </div>
+                        <span class="text-[11px] text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">
+                            🔍 ประมวลผลจากแหล่งข่าวทางการ
+                        </span>
+                    </div>
+
+                    <div id="specific-stock-news-list" class="space-y-4">
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <div id="page-assessment" class="hidden flex-grow py-10 px-4">
+        <div class="max-w-4xl mx-auto">
+            
+            <div class="text-center mb-8">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 border border-emerald-800 px-3.5 py-1.5 rounded-full">
+                    DYNAMIC SUITABILITY & ALLOCATION ENGINE
+                </span>
+                <h1 class="text-2xl md:text-4xl font-black text-white mt-3">
+                    แบบประเมินตัวตน 7 มิติ & แนะนำการจัดพอร์ตเฉพาะบุคคล
+                </h1>
+                <p class="text-slate-400 text-xs md:text-sm mt-2 max-w-xl mx-auto">
+                    ทุกคำถามมีตัวเลือกละเอียด 4-5 ตัวเลือก ระบบจะคำนวณสัดส่วนพอร์ต (Asset Allocation) แยกตามคำตอบของคุณโดยเฉพาะ พร้อมยกตัวอย่างหุ้น 2-3 ตัวที่สอดคล้องกับตลาดและระดับความเสี่ยงที่เลือก
+                </p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 md:p-8 shadow-2xl mb-8">
+                <div class="space-y-6 mb-8">
+                    
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            1. ระดับประสบการณ์และความคุ้นเคยในการลงทุนของคุณ?
+                        </label>
+                        <select id="q-exp" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="1">1. มือใหม่เอี่ยม (ไม่เคยเปิดพอร์ตหุ้น ไม่คุ้นเคยกับงบการเงินหรือกราฟ)</option>
+                            <option value="2">2. พอมีพื้นฐาน (เคยลงทุนในกองทุนรวม หรือสลากออมทรัพย์มาบ้าง)</option>
+                            <option value="3">3. มีประสบการณ์ 1-2 ปี (เคยซื้อขายหุ้นไทยหรือคริปโต เข้าใจคำว่าปันผล)</option>
+                            <option value="4">4. นักลงทุนปานกลาง (สามารถอ่านงบการเงิน P/E, ROE, D/E เบื้องต้นได้)</option>
+                            <option value="5">5. ผู้ลงทุนขั้นสูง (เน้นวิเคราะห์คูเมืองธุรกิจ Valuation และจัดพอร์ตสินทรัพย์เอง)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            2. หากตลาดหุ้นเกิดวิกฤตเศรษฐกิจ พอร์ตติดลบสูงสุด (Max Drawdown) ที่คุณทนได้โดยไม่ตื่นตระหนก?
+                        </label>
+                        <select id="q-risk" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="1">1. ติดลบได้ไม่เกิน -5% (นอนไม่หลับหากเห็นตัวเลขสีแดง เน้นรักษาเงินต้น)</option>
+                            <option value="2">2. ติดลบได้ -10% ถึง -15% (ยอมรับความผันผวนระยะสั้นได้บ้าง เพื่อแลกกับปันผล)</option>
+                            <option value="3">3. ติดลบได้ -20% ถึง -25% (ทนได้หากธุรกิจยังมีกำไรและคูเมืองยังแข็งแกร่ง)</option>
+                            <option value="4">4. ติดลบได้ -30% ถึง -40% (มองเป็นโอกาสช้อนซื้อสะสมหุ้นคุณภาพดีในราคาถูก)</option>
+                            <option value="5">5. ทนการติดลบได้ -50%+ (พร้อมรับความผันผวนรุนแรง เพื่อโอกาสเติบโตแบบก้าวกระโดด)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            3. ขอบเขตตลาดและภูมิศาสตร์ที่คุณสนใจจัดสรรเงินลงทุน?
+                        </label>
+                        <select id="q-market" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="th">1. ตลาดหุ้นไทย (SET) ล้วนๆ เน้นเข้าใจง่าย ใกล้ตัวในชีวิตประจำวัน</option>
+                            <option value="us">2. ตลาดสหรัฐฯ (US Megacap & Quality Stocks) เน้นผู้นำระดับโลก</option>
+                            <option value="global">3. ผสมผสานทั่วโลก (กระจายความเสี่ยงทั้งไทย สหรัฐฯ และยุโรป)</option>
+                            <option value="emerging">4. ตลาดเกิดใหม่และเทคโนโลยีเอเชีย (เน้นไต้หวัน ชิป และอาเซียน)</option>
+                            <option value="all">5. กระจายทุกสินทรัพย์ (หุ้นไทย + หุ้นโลก + โครงสร้างพื้นฐาน)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            4. เป้าหมายผลตอบแทนหลักที่คาดหวังในระยะยาว?
+                        </label>
+                        <select id="q-goal" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="safe">1. ชนะเงินเฟ้อและดอกเบี้ยฝากประจำ (เป้าหมาย 4% - 6% ต่อปี แบบมั่นคง)</option>
+                            <option value="div">2. สร้างกระแสเงินสดจากเงินปันผลสม่ำเสมอ (เป้าหมาย 6% - 8% ต่อปี)</option>
+                            <option value="balanced">3. เติบโตสมดุล Balance Growth (เป้าหมาย 8% - 12% ต่อปี ชนะดัชนีเฉลี่ย)</option>
+                            <option value="growth">4. เน้นการเติบโตของเงินต้นสูง (เป้าหมาย 15% - 20% ต่อปี จากเมกะเทรนด์)</option>
+                            <option value="exponential">5. สร้างความมั่งคั่งแบบทวีคูณ (เป้าหมาย 20%+ ต่อปี รับความเสี่ยงสูงสุดได้)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            5. ระยะเวลาที่คุณสามารถถือครองเงินลงทุนก้อนนี้ได้โดยไม่ต้องถอนออกมาใช้?
+                        </label>
+                        <select id="q-time" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="short">1. สั้นมาก น้อยกว่า 1 ปี (อาจต้องนำเงินไปใช้จ่ายหมุนเวียน)</option>
+                            <option value="med_short">2. ปานกลางค่อนข้างสั้น 1 - 2 ปี</option>
+                            <option value="med">3. ปานกลาง 3 - 5 ปี (ระยะเวลามาตรฐานในการผ่านรอบธุรกิจ)</option>
+                            <option value="long">4. ระยะยาว 5 - 10 ปี (เหมาะสมที่สุดสำหรับการปล่อยให้ดอกเบี้ยทบต้นทำงาน)</option>
+                            <option value="retirement">5. ยาวมาก 10 ปีขึ้นไป หรือเงินลงทุนเพื่อการเกษียณอายุ</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            6. รูปแบบและวินัยในการเติมเงินลงทุนที่คุณสะดวกที่สุด?
+                        </label>
+                        <select id="q-style" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="dca_strict">1. DCA สม่ำเสมอทุกวันเงินเดือนออก ไม่สนใจว่าตลาดจะขึ้นหรือลง</option>
+                            <option value="dca_dip">2. DCA รายเดือน + กันเงินสดไว้ช้อนซื้อเพิ่มเวลาตลาดปรับฐานแรง (Buy on Dips)</option>
+                            <option value="lump_val">3. มีเงินก้อนพร้อมลงทุน (Lump Sum) โดยทยอยแบ่ง 3-4 ไม้ตามระดับราคา</option>
+                            <option value="hybrid">4. ผสมผสาน: วางพอร์ตหลัก 70% และแบ่ง 30% ไว้จับจังหวะเทรนด์</option>
+                            <option value="tactical">5. จัดสรรตามรอบวัฏจักรเศรษฐกิจ (Rebalance พอร์ตทุก 6-12 เดือน)</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                        <label class="block text-xs font-bold text-slate-300 mb-2">
+                            7. สภาพคล่องและ "เงินสำรองฉุกเฉิน" (Emergency Fund) ที่แยกไว้ต่างหาก?
+                        </label>
+                        <select id="q-emergency" class="w-full bg-slate-900 text-white text-xs md:text-sm rounded-xl p-3 border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="none">1. ยังไม่มีเงินสำรองเลย และมีภาระหนี้ระยะสั้นที่ต้องจ่ายทุกเดือน ⚠️</option>
+                            <option value="low">2. มีเงินสำรองประมาณ 1-2 เดือน (ยังไม่ครอบคลุมหากตกงานหรือฉุกเฉิน)</option>
+                            <option value="good">3. มีเงินสำรอง 3-6 เดือนในบัญชีเงินฝากสภาพคล่องสูงแยกไว้เรียบร้อย ✅</option>
+                            <option value="excellent">4. มีเงินสำรอง 6-12 เดือน ปลอดหนี้ และมีกระแสเงินสดส่วนเกินทุกเดือน</option>
+                            <option value="high_net">5. มั่งคั่งสูง มีสภาพคล่องส่วนตัวเหลือเฟือ พอร์ตนี้เป็นเงินเย็น 100%</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <button onclick="calculateDynamicPortfolio()" class="w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-black py-4 rounded-xl transition text-sm shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2">
+                    <span>🏛️</span> วิเคราะห์ผล 7 มิติ & คำนวณสัดส่วนพอร์ตเฉพาะคุณ
+                </button>
+            </div>
+
+            <div id="portfolio-output-container" class="hidden"></div>
+
+        </div>
+    </div>
+
+    <footer class="bg-slate-950 border-t border-slate-800 py-8 px-4 text-xs text-slate-500 mt-auto">
+        <div class="max-w-5xl mx-auto space-y-2">
+            <div class="flex items-center gap-2 text-slate-300 font-bold text-sm">
+                <span>🛡️</span>
+                <span>ข้อจำกัดความรับผิดชอบทางกฎหมาย (Legal Disclaimer) - LONG TRADE</span>
+            </div>
+            <p class="leading-relaxed">
+                LONG TRADE เป็นแพลตฟอร์มที่จัดทำขึ้นเพื่อวัตถุประสงค์ในการ <strong>"ส่งเสริมความรู้ทางการเงิน การวิเคราะห์เชิงปัจจัยพื้นฐาน และเป็นกรณีศึกษาแก่นักลงทุนมือใหม่เท่านั้น"</strong> การเชื่อมต่อข้อมูลราคาเรียลไทม์ผ่าน TradingView และการรวบรวมข้อมูลสรุปข่าวสารจากสำนักข่าวชั้นนำมิใช่คำแนะนำทางการเงิน (Financial Advice) คำชักชวน หรือการรับประกันผลตอบแทน
+            </p>
+            <div class="pt-2 border-t border-slate-900 text-center text-slate-600">
+                &copy; LONG TRADE - Advanced Global Market Intelligence & In-Page Factual News Wire
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
