@@ -109,6 +109,46 @@ const factualNewsDatabase = {
             }
         ]
     },
+    "BDMS": {
+        name: "บมจ. กรุงเทพดุสิตเวชการ",
+        symbol: "SET:BDMS",
+        desc: "กลุ่มโรงพยาบาลเอกชนที่ให้บริการด้านการแพทย์และสุขภาพ"
+    },
+    "CPN": {
+        name: "บมจ. เซ็นทรัลพัฒนา",
+        symbol: "SET:CPN",
+        desc: "ผู้พัฒนาและบริหารศูนย์การค้า อาคารสำนักงาน โรงแรม และโครงการที่พักอาศัย"
+    },
+    "PTT": {
+        name: "บมจ. ปตท.",
+        symbol: "SET:PTT",
+        desc: "กลุ่มธุรกิจพลังงานและปิโตรเลียมของไทย"
+    },
+    "ADVANC": {
+        name: "บมจ. แอดวานซ์ อินโฟร์ เซอร์วิส",
+        symbol: "SET:ADVANC",
+        desc: "ผู้ให้บริการโทรคมนาคมและบริการดิจิทัลในประเทศไทย"
+    },
+    "KBANK": {
+        name: "บมจ. ธนาคารกสิกรไทย",
+        symbol: "SET:KBANK",
+        desc: "ธนาคารพาณิชย์และผู้ให้บริการทางการเงินในประเทศไทย"
+    },
+    "SCB": {
+        name: "บมจ. เอสซีบี เอกซ์",
+        symbol: "SET:SCB",
+        desc: "กลุ่มธุรกิจการเงินและธนาคารไทย"
+    },
+    "BH": {
+        name: "บมจ. โรงพยาบาลบำรุงราษฎร์",
+        symbol: "SET:BH",
+        desc: "ผู้ให้บริการโรงพยาบาลเอกชนและการรักษาพยาบาลเฉพาะทาง"
+    },
+    "MINT": {
+        name: "บมจ. ไมเนอร์ อินเตอร์เนชั่นแนล",
+        symbol: "SET:MINT",
+        desc: "กลุ่มธุรกิจโรงแรม ร้านอาหาร และไลฟ์สไตล์"
+    },
     "COST": {
         name: "Costco Wholesale Corporation",
         symbol: "NASDAQ:COST",
@@ -209,13 +249,17 @@ function initTradingViewWidget(symbol) {
 }
 
 function executeStockSearch(rawInput) {
-    const cleanTicker = rawInput.trim().toUpperCase().replace('SET:', '').replace('NASDAQ:', '').replace('NYSE:', '').replace('AMEX:', '');
-    let symbolToLoad = rawInput.trim().toUpperCase();
+    const input = String(rawInput || '').trim().toUpperCase();
+    if (!input) return;
+
+    const symbolParts = input.match(/^([A-Z0-9._-]+):(.+)$/);
+    const cleanTicker = symbolParts ? symbolParts[2] : input;
+    let symbolToLoad = input;
     let companyName = cleanTicker;
     let companyDesc = "ข้อมูลราคาตลาดสดเรียลไทม์ (Global Real-time Feed)";
 
     const thaiStocks = ['CPALL', 'DELTA', 'PTT', 'ADVANC', 'BDMS', 'GULF', 'KBANK', 'SCB', 'CPN', 'BH', 'MINT'];
-    if (thaiStocks.includes(cleanTicker) && !symbolToLoad.includes(':')) {
+    if (thaiStocks.includes(cleanTicker) && !symbolParts) {
         symbolToLoad = 'SET:' + cleanTicker;
     }
 
@@ -234,6 +278,12 @@ function executeStockSearch(rawInput) {
     initTradingViewWidget(symbolToLoad);
 
     renderSpecificStockNews(cleanTicker, symbolToLoad, companyName);
+}
+
+function viewRecommendedStock(symbol) {
+    switchPage('search');
+    executeStockSearch(symbol);
+    document.getElementById('stock-details').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function handleGlobalSearch(e) {
@@ -256,7 +306,7 @@ function renderSpecificStockNews(ticker, fullSymbol, companyName) {
                         ${item.sentiment}
                     </span>
                     <span class="text-xs text-slate-400 font-mono">
-                        📌 <strong>แหล่งข้อมูล:</strong> ${item.source} (${item.timestamp})
+                        📌 <strong>แหล่งอ้างอิงที่ระบุ:</strong> ${item.source} · ข้อมูลในฐานข้อมูล ไม่ใช่ข่าวเรียลไทม์
                     </span>
                 </div>
 
@@ -284,47 +334,57 @@ function renderSpecificStockNews(ticker, fullSymbol, companyName) {
             </div>
         `).join('');
     } else {
-        const isThai = fullSymbol.startsWith('SET:');
-        const marketName = isThai ? "ตลาดหลักทรัพย์แห่งประเทศไทย (SET)" : "ตลาดหุ้นต่างประเทศ (Global Market)";
-        const regSource = isThai ? "แบบ 56-1 One Report และสารสนเทศ บจ. ผ่านระบบ SET Portal" : "รายงานงบการเงิน SEC Form 10-K / 10-Q และสำนักข่าวการเงินสากล";
-
         container.innerHTML = `
             <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-lg">
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border text-cyan-400 border-cyan-800 bg-cyan-950">
-                        ข้อมูลประมวลผลอัตโนมัติ
-                    </span>
-                    <span class="text-xs text-slate-400 font-mono">
-                        📌 <strong>อ้างอิง:</strong> ${regSource}
-                    </span>
+                <div class="text-sm font-bold text-amber-300 mb-2">
+                    ยังไม่มีสรุปข่าวเฉพาะ ${escapeHtml(ticker)} ในฐานข้อมูลของหน้านี้
                 </div>
-
-                <h4 class="text-base md:text-lg font-bold text-white mb-2 leading-snug">
-                    สรุปประเด็นธุรกิจและปัจจัยพื้นฐานของ ${escapeHtml(ticker)} (${escapeHtml(companyName)})
-                </h4>
-
-                <div class="mb-4 text-xs md:text-sm text-slate-300 leading-relaxed bg-slate-900/60 p-4 rounded-xl border border-slate-800/80">
-                    <p class="mb-2">
-                        <strong>โครงสร้างตลาด:</strong> ${escapeHtml(ticker)} เป็นหลักทรัพย์จดทะเบียนใน ${marketName} ภายใต้การกำกับดูแลตามเกณฑ์การเปิดเผยข้อมูลสารสนเทศที่โปร่งใส การเคลื่อนไหวของราคาจะสะท้อนตามวัฏจักรของกลุ่มอุตสาหกรรมและทิศทางอัตราดอกเบี้ยนโยบาย
-                    </p>
-                    <p>
-                        <strong>สรุปทิศทางผลประกอบการ:</strong> บริษัทในกลุ่มนี้ได้รับผลกระทบโดยตรงจากความสามารถในการบริหารจัดการต้นทุนและการรักษาอัตรากำไรขั้นต้น (Gross Profit Margin) ในภาวะเศรษฐกิจปัจจุบัน
-                    </p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                    <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-xl text-slate-300">
-                        <strong class="text-emerald-400 block mb-1">💡 เช็กลิสต์ประเมินมูลค่า:</strong>
-                        ตรวจสอบอัตราส่วน P/E เทียบกับค่าเฉลี่ยของอุตสาหกรรม และดูอัตราผลตอบแทนต่อส่วนของผู้ถือหุ้น (ROE) ว่าอยู่ในระดับสูงกว่า 12-15% หรือไม่
-                    </div>
-                    <div class="bg-slate-900 border border-slate-800 p-3.5 rounded-xl text-slate-300">
-                        <strong class="text-amber-400 block mb-1">🎯 ปัจจัยความเสี่ยงที่ต้องระวัง:</strong>
-                        หนี้สินที่มีภาระดอกเบี้ย (Interest-bearing Debt) และกระแสเงินสดจากการดำเนินงานว่าเพียงพอต่อการจ่ายปันผลและการลงทุนต่อหรือไม่
-                    </div>
-                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    เพื่อไม่แสดงข่าวหรือบทวิเคราะห์ที่ยังไม่ได้ตรวจสอบ คุณสามารถเปิดข่าวล่าสุด เอกสารจากหน่วยงานกำกับดูแล และข้อมูลตลาดจากลิงก์ด้านล่างได้โดยตรง
+                </p>
             </div>
         `;
     }
+
+    container.insertAdjacentHTML('beforeend', renderStockSourceLinks(ticker, fullSymbol, companyName));
+}
+
+function renderStockSourceLinks(ticker, fullSymbol, companyName) {
+    const searchQuery = encodeURIComponent(`${ticker} ${companyName}`);
+    const isThaiStock = fullSymbol.startsWith('SET:');
+    const disclosureLink = isThaiStock
+        ? `https://www.set.or.th/th/market/product/stock/quote/${encodeURIComponent(ticker)}/overview`
+        : `https://www.sec.gov/edgar/search/#/q=${encodeURIComponent(ticker)}`;
+    const disclosureLabel = isThaiStock ? 'ข้อมูลหลักทรัพย์และข่าวจาก SET' : 'เอกสารรายงานจาก SEC EDGAR';
+    const links = [
+        {
+            label: 'ค้นหาข่าวล่าสุด',
+            url: `https://news.google.com/search?q=${searchQuery}`
+        },
+        {
+            label: disclosureLabel,
+            url: disclosureLink
+        },
+        {
+            label: 'กราฟและข้อมูลตลาด TradingView',
+            url: `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(fullSymbol)}`
+        }
+    ];
+
+    return `
+        <div class="flex flex-wrap gap-2">
+            ${links.map(link => `
+                <a
+                    href="${link.url}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500 text-cyan-300 px-3 py-2 rounded-xl text-xs transition"
+                >
+                    ${escapeHtml(link.label)} <span aria-hidden="true">↗</span>
+                </a>
+            `).join('')}
+        </div>
+    `;
 }
 
 function switchPage(page) {
@@ -568,7 +628,7 @@ function calculateDynamicPortfolio() {
                     ${selectedStocks.map(stock => `
                         <button
                             type="button"
-                            onclick="executeStockSearch('${stock.symbol}')"
+                            onclick="viewRecommendedStock('${stock.symbol}')"
                             class="text-left bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500 p-5 rounded-2xl transition"
                         >
                             <div class="flex items-center justify-between gap-3 mb-2">
